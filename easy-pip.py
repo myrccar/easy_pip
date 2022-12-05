@@ -60,10 +60,14 @@ def lsit_packages():
 TitleFrame = ttk.Frame(root,width=100)
 TitleFrame.pack()
 
-TitleIconImage = Image.open("easy pip.ico").resize((40,40), Image.ANTIALIAS)
+TitleIconImage = Image.open("easy pip.png").resize((40,40), Image.ANTIALIAS)
 TitleIcon = ImageTk.PhotoImage(TitleIconImage)
 TitleIconLable = ttk.Label(TitleFrame,image=TitleIcon)
 TitleIconLable.pack(side="left")
+
+LoadingIconImage = ImageTk.PhotoImage(Image.open("loading.png").resize((40,40),Image.ANTIALIAS))
+LoadingIcon = ttk.Label(TitleFrame,image=LoadingIconImage)
+
 
 TitleFont = font.Font(family='Helvetica', size=20, weight='bold')
 titleText = ttk.Label(TitleFrame,text="easy pip",font=TitleFont,width=500)
@@ -90,6 +94,7 @@ scroll.pack(side=LEFT,fill=Y)
 PackageList.pack(side=LEFT)
 lsit_packages()
 
-
+BottomButtonTray = ttk.Frame(root,width=100)
+BottomButtonTray.pack(side=LEFT)
 
 root.mainloop()
