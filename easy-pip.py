@@ -15,7 +15,7 @@ pip show <package>
 pip uninstall <ackage>
 '''
 
-root = ThemedTk(theme='equilux')
+root = ThemedTk(theme='equilux',background="#464646")
 root.geometry("500x500")
 root.resizable(0,0)
 icon = PhotoImage(file="easy pip.png")
@@ -57,6 +57,13 @@ def lsit_packages():
     for i in range(len(packageListData)):
         PackageList.insert(i,f"{packageListData[i][0]} -- {packageListData[i][1]}")
 
+def remove_package():
+    PackageName = PackageList.get(PackageList.curselection()[0]).split()[0]
+    if messagebox.askokcancel("package removal ahead",f"are you sure you want to remove {PackageName}"):
+        os.system(f"pip uninstall {PackageName} Y")
+        ExitCode = os.system(f"Y")
+        if ExitCode:
+            messagebox.showinfo(f"successfully removed {PackageName}",f"the package: {PackageName} has been removed from your system")
 TitleFrame = ttk.Frame(root,width=100)
 TitleFrame.pack()
 
@@ -87,14 +94,23 @@ InstallButton.pack(side='right')
 PackageListFrame = ttk.Frame(root)
 PackageListFrame.pack()
 scroll = ttk.Scrollbar(PackageInputFrame, orient=VERTICAL)
-PackageList = Listbox(PackageListFrame,yscrollcommand=scroll.set,height=30,width=100,font=font.Font(family="Helvetica",size=15))
+PackageList = Listbox(PackageListFrame,yscrollcommand=scroll.set,height=16,width=100,font=font.Font(family="Helvetica",size=15))
 PackageList.configure(background="#464646",foreground="#798585",border=0)
 scroll.config(command=PackageList.yview)
 scroll.pack(side=LEFT,fill=Y)
 PackageList.pack(side=LEFT)
 lsit_packages()
 
-BottomButtonTray = ttk.Frame(root,width=100)
-BottomButtonTray.pack(side=LEFT)
+BottomButtonTray = ttk.Frame(root,width=1000,height=200)
+BottomButtonTray.pack(side=LEFT,fill=X)
+
+InfoButton = ttk.Button(BottomButtonTray,width=10,text="info")
+InfoButton.pack(side=LEFT)
+
+UpdateButton = ttk.Button(BottomButtonTray,width=10,text="update")
+UpdateButton.pack(side=LEFT)
+
+RemoveButton = ttk.Button(BottomButtonTray,width=10,text="remove",command=remove_package)
+RemoveButton.pack(side=LEFT)
 
 root.mainloop()
