@@ -60,14 +60,16 @@ def lsit_packages():
 def remove_package():
     PackageName = PackageList.get(PackageList.curselection()[0]).split()[0]
     if messagebox.askokcancel("package removal ahead",f"are you sure you want to remove {PackageName}"):
-        os.system(f"pip uninstall {PackageName} Y")
-        ExitCode = os.system(f"Y")
-        if ExitCode:
+        ExitCode = os.system(f"pip uninstall  -y {PackageName}")
+        if not ExitCode:
             messagebox.showinfo(f"successfully removed {PackageName}",f"the package: {PackageName} has been removed from your system")
+        else:
+            messagebox.showerror("package uninstalling failed",f"failed to uninstall {PackageName} successfully")
+        lsit_packages()
 
 def update_package():
     PackageName = PackageList.get(PackageList.curselection()[0]).split()[0]
-    ExitCode = os.system(f"pip install {PackageName} -U")
+    ExitCode = os.system(f"pip install {PackageName} -U --user")
     if not ExitCode:
         messagebox.showinfo("updated package",f"{PackageName} was updated successfully")
     else:
