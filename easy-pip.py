@@ -12,7 +12,7 @@ command needed:
 pip show <package>
 -pip list-
 -pip install <package>-
-pip uninstall <ackage>
+-pip uninstall <ackage>-
 '''
 
 root = ThemedTk(theme='equilux',background="#464646")
@@ -21,6 +21,8 @@ root.resizable(0,0)
 icon = PhotoImage(file="easy pip.png")
 root.iconphoto(False, icon)
 root.title("easy pip")
+
+pip_list = []
 
 def get_pip_list():
     raw_list = subprocess.run(['pip', 'list'], stdout=subprocess.PIPE, text=True).stdout.splitlines(False)
@@ -40,6 +42,7 @@ def get_pip_list():
 
     return output
 
+pip_list = get_pip_list()
 
 def install_package():
     name = PackageInput.get()
@@ -56,11 +59,12 @@ def lsit_packages():
     PackageList.delete(0,END)
     for i in range(len(packageListData)):
         PackageList.insert(i,f"{packageListData[i][0]} -- {packageListData[i][1]}")
+    pip_list = packageListData
 
 def remove_package():
     PackageName = PackageList.get(PackageList.curselection()[0]).split()[0]
     if messagebox.askokcancel("package removal ahead",f"are you sure you want to remove {PackageName}"):
-        ExitCode = os.system(f"pip uninstall  -y {PackageName}")
+        ExitCode = os.system(f"pip uninstall -y {PackageName}")
         if not ExitCode:
             messagebox.showinfo(f"successfully removed {PackageName}",f"the package: {PackageName} has been removed from your system")
         else:
@@ -75,6 +79,22 @@ def update_package():
     else:
         messagebox.showerror("package update failed",f"failed to update {PackageName} successfully")
     lsit_packages()
+
+
+def search_list(event):
+    Value = PackageInput.get().lower()
+
+    if not Value == "":
+        PackageList.delete(0,END)
+
+
+        for x in pip_list:
+            if Value in x[0].lower()[0:len(Value)]:
+                PackageList.insert(END,f"{x[0]} -- {x[1]}")
+    else:
+        PackageList.delete(0,END)
+        for x in pip_list:
+            PackageList.insert(END,f"{x[0]} -- {x[1]}")
 
 TitleFrame = ttk.Frame(root,width=100)
 TitleFrame.pack()
@@ -99,6 +119,8 @@ InputFont = font.Font(family="Helvetica",size=15)
 PackageInput = ttk.Entry(PackageInputFrame,font=InputFont,width=38)
 PackageInput.focus_set()
 PackageInput.pack(side='left')
+PackageInput.bind('<KeyRelease>',search_list)
+PackageInput.bind('<Return>',lambda event: install_package())
 
 InstallButton = ttk.Button(PackageInputFrame,text="install",width=10,command=install_package)
 InstallButton.pack(side='right')
@@ -114,15 +136,19 @@ PackageList.pack(side=LEFT)
 lsit_packages()
 
 BottomButtonTray = ttk.Frame(root,width=1000,height=200)
-BottomButtonTray.pack(side=LEFT,fill=X)
+BottomButtonTray.pack(fill="both", expand=True)
+
+for i in range(3):
+    BottomButtonTray.columnconfigure(i, weight=1)
+BottomButtonTray.rowconfigure(0, weight=1)
 
 InfoButton = ttk.Button(BottomButtonTray,width=10,text="info")
-InfoButton.pack(side=LEFT)
+InfoButton.grid(row=0,column=0, sticky="nsew")
 
 UpdateButton = ttk.Button(BottomButtonTray,width=10,text="update",command=update_package)
-UpdateButton.pack(side=LEFT)
+UpdateButton.grid(row=0,column=1, sticky="nsew")
 
 RemoveButton = ttk.Button(BottomButtonTray,width=10,text="remove",command=remove_package)
-RemoveButton.pack(side=LEFT)
+RemoveButton.grid(row=0,column=2, sticky="nsew")
 
 root.mainloop()
