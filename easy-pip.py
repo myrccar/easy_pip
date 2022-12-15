@@ -5,6 +5,7 @@ from ttkthemes import ThemedTk
 import tkinter.font as font
 import os
 from PIL import ImageTk, Image 
+import webbrowser
 
 
 '''
@@ -21,6 +22,9 @@ root.resizable(0,0)
 icon = PhotoImage(file="easy pip.png")
 root.iconphoto(False, icon)
 root.title("easy pip")
+
+MainWindow = ttk.Frame(root)
+PackageInfoWindow = ttk.Frame(root)
 
 pip_list = []
 
@@ -112,7 +116,7 @@ TitleFont = font.Font(family='Helvetica', size=20, weight='bold')
 titleText = ttk.Label(TitleFrame,text="easy pip",font=TitleFont,width=500)
 titleText.pack()
 
-PackageInputFrame = ttk.Frame(root,width=500,height=10)
+PackageInputFrame = ttk.Frame(MainWindow,width=500,height=10)
 PackageInputFrame.pack()
 
 InputFont = font.Font(family="Helvetica",size=15)
@@ -125,7 +129,7 @@ PackageInput.bind('<Return>',lambda event: install_package())
 InstallButton = ttk.Button(PackageInputFrame,text="install",width=10,command=install_package)
 InstallButton.pack(side='right')
 
-PackageListFrame = ttk.Frame(root)
+PackageListFrame = ttk.Frame(MainWindow)
 PackageListFrame.pack()
 scroll = ttk.Scrollbar(PackageInputFrame, orient=VERTICAL)
 PackageList = Listbox(PackageListFrame,yscrollcommand=scroll.set,height=16,width=100,font=font.Font(family="Helvetica",size=15))
@@ -135,7 +139,7 @@ scroll.pack(side=LEFT,fill=Y)
 PackageList.pack(side=LEFT)
 lsit_packages()
 
-BottomButtonTray = ttk.Frame(root,width=1000,height=200)
+BottomButtonTray = ttk.Frame(MainWindow,width=1000,height=200)
 BottomButtonTray.pack(fill="both", expand=True)
 
 for i in range(3):
@@ -151,4 +155,21 @@ UpdateButton.grid(row=0,column=1, sticky="nsew")
 RemoveButton = ttk.Button(BottomButtonTray,width=10,text="remove",command=remove_package)
 RemoveButton.grid(row=0,column=2, sticky="nsew")
 
+#package info window
+PackageNameFrame = ttk.Frame(PackageInfoWindow,width=100)
+
+PackageName = ttk.Label(PackageInfoWindow,text="flask",font=font.Font(size=40))
+PackageName.pack(side=LEFT)
+
+PackageVersion = ttk.Label(PackageInfoWindow,text="2.2.2",font=font.Font(size=13))
+PackageVersion.pack(side=LEFT)
+
+PackageInputFrame.pack(side=TOP)
+
+PackageDscription = ttk.Label(PackageInfoWindow,text="A simple framework for building complex web applications.")
+PackageDscription.pack(side=TOP)
+
+
+#MainWindow.pack(side=BOTTOM,fill=BOTH,expand=True)
+PackageInfoWindow.pack(side=BOTTOM,fill=BOTH,expand=True)
 root.mainloop()
