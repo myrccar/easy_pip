@@ -190,15 +190,18 @@ RemoveButton.grid(row=0,column=2, sticky="nsew")
 #package info window
 PackageNameFrame = ttk.Frame(PackageInfoWindow,width=100)
 
-PackageNameLable = ttk.Label(PackageInfoWindow,text=PackageInfo[0],font=font.Font(size=40))
+PackageNameLable = ttk.Label(PackageInfoWindow,text=PackageInfo[0],font=font.Font(size=30))
 PackageNameLable.pack(side=LEFT)
 
 PackageVersion = ttk.Label(PackageInfoWindow,text="2.2.2",font=font.Font(size=13))
 PackageVersion.pack(side=LEFT)
 
+PackageInfoClose = ttk.Button(PackageInfoWindow,text="X")
+PackageInfoClose.pack(side=LEFT)
+
 PackageInputFrame.pack(side=TOP)
 
-PackageDscription = ttk.Label(PackageInfoWindow,text="A simple framework for building complex web applications.")
+PackageDscription = ttk.Label(PackageInfoWindow,text="A simple framework for building complex web applications.",wraplength=200)
 PackageDscription.pack(side=TOP)
 
 
