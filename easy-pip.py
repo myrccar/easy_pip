@@ -27,6 +27,7 @@ MainWindow = ttk.Frame(root)
 PackageInfoWindow = ttk.Frame(root)
 
 pip_list = []
+PackageInfo = ["none" for i in range(9)]
 
 def get_pip_list():
     raw_list = subprocess.run(['pip', 'list'], stdout=subprocess.PIPE, text=True).stdout.splitlines(False)
@@ -108,6 +109,7 @@ def get_info():
     if output == []:
         messagebox.showerror("package info faild",f"failed to get info on {PackageName} successfully")
     else:
+        global PackageInfo 
         PackageInfo = []
         PackageInfo.append(output[0].split("Name: ")[1])
         PackageInfo.append(output[1].split("Version: ")[1])
@@ -120,6 +122,15 @@ def get_info():
         PackageInfo.append(output[8].split("Requires: ")[1].replace(",",""))
         PackageInfo.append(output[9].split("Required-by: ")[1].replace(",",""))
         print(PackageInfo)
+
+        #show info window
+        PackageInfoWindow.pack(side=BOTTOM,fill=BOTH,expand=True)
+        #update text
+        PackageNameLable.config(text=PackageInfo[0])
+        PackageDscription.config(text=PackageInfo[2])
+        PackageVersion.config(text=PackageInfo[1])
+        #hide main window
+        MainWindow.pack_forget()
 
 TitleFrame = ttk.Frame(root,width=100)
 TitleFrame.pack()
@@ -179,8 +190,8 @@ RemoveButton.grid(row=0,column=2, sticky="nsew")
 #package info window
 PackageNameFrame = ttk.Frame(PackageInfoWindow,width=100)
 
-PackageName = ttk.Label(PackageInfoWindow,text="flask",font=font.Font(size=40))
-PackageName.pack(side=LEFT)
+PackageNameLable = ttk.Label(PackageInfoWindow,text=PackageInfo[0],font=font.Font(size=40))
+PackageNameLable.pack(side=LEFT)
 
 PackageVersion = ttk.Label(PackageInfoWindow,text="2.2.2",font=font.Font(size=13))
 PackageVersion.pack(side=LEFT)
