@@ -100,6 +100,27 @@ def search_list(event):
         for x in pip_list:
             PackageList.insert(END,f"{x[0]} -- {x[1]}")
 
+def get_info():
+    PackageName = PackageList.get(PackageList.curselection()[0]).split()[0]
+
+    output = subprocess.run(['pip', 'show',PackageName], stdout=subprocess.PIPE, text=True).stdout.splitlines(False)
+    #error check\/
+    if output == []:
+        messagebox.showerror("package info faild",f"failed to get info on {PackageName} successfully")
+    else:
+        PackageInfo = []
+        PackageInfo.append(output[0].split("Name: ")[1])
+        PackageInfo.append(output[1].split("Version: ")[1])
+        PackageInfo.append(output[2].split("Summary: ")[1])
+        PackageInfo.append(output[3].split("Home-page: ")[1])
+        PackageInfo.append(output[4].split("Author: ")[1])
+        PackageInfo.append(output[5].split("Author-email: ")[1])
+        PackageInfo.append(output[6].split("License: ")[1])
+        PackageInfo.append(output[7].split("Location: ")[1])
+        PackageInfo.append(output[8].split("Requires: ")[1].replace(",",""))
+        PackageInfo.append(output[9].split("Required-by: ")[1].replace(",",""))
+        print(PackageInfo)
+
 TitleFrame = ttk.Frame(root,width=100)
 TitleFrame.pack()
 
@@ -146,7 +167,7 @@ for i in range(3):
     BottomButtonTray.columnconfigure(i, weight=1)
 BottomButtonTray.rowconfigure(0, weight=1)
 
-InfoButton = ttk.Button(BottomButtonTray,width=10,text="info")
+InfoButton = ttk.Button(BottomButtonTray,width=10,text="info",command=get_info)
 InfoButton.grid(row=0,column=0, sticky="nsew")
 
 UpdateButton = ttk.Button(BottomButtonTray,width=10,text="update",command=update_package)
@@ -170,6 +191,6 @@ PackageDscription = ttk.Label(PackageInfoWindow,text="A simple framework for bui
 PackageDscription.pack(side=TOP)
 
 
-#MainWindow.pack(side=BOTTOM,fill=BOTH,expand=True)
-PackageInfoWindow.pack(side=BOTTOM,fill=BOTH,expand=True)
+MainWindow.pack(side=BOTTOM,fill=BOTH,expand=True)
+#PackageInfoWindow.pack(side=BOTTOM,fill=BOTH,expand=True)
 root.mainloop()
