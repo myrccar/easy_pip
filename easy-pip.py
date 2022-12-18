@@ -9,8 +9,8 @@ import webbrowser
 
 
 '''
-command needed:
-pip show <package>
+commands needed:
+-pip show <package>-
 -pip list-
 -pip install <package>-
 -pip uninstall <ackage>-
@@ -19,9 +19,10 @@ pip show <package>
 root = ThemedTk(theme='equilux',background="#464646")
 root.geometry("500x500")
 root.resizable(0,0)
-icon = PhotoImage(file="easy pip.png")
+icon = PhotoImage(file="img/easy pip.png")
 root.iconphoto(False, icon)
 root.title("easy pip")
+root.config(cursor="arrow")
 
 MainWindow = ttk.Frame(root)
 PackageInfoWindow = ttk.Frame(root)
@@ -50,8 +51,12 @@ def get_pip_list():
 pip_list = get_pip_list()
 
 def install_package():
+    loading(True)
+    root.update()
     name = PackageInput.get()
     outputCode = os.system(f"pip install {name}")
+    loading(False)
+    root.update()
     if outputCode == 0:
         messagebox.showinfo("installed package",f"{name} was install successfully")
         lsit_packages()
@@ -69,16 +74,31 @@ def lsit_packages():
 def remove_package():
     PackageName = PackageList.get(PackageList.curselection()[0]).split()[0]
     if messagebox.askokcancel("package removal ahead",f"are you sure you want to remove {PackageName}"):
+        loading(True)
+        root.update()
         ExitCode = os.system(f"pip uninstall -y {PackageName}")
+        loading(False)
+        root.update()
         if not ExitCode:
             messagebox.showinfo(f"successfully removed {PackageName}",f"the package: {PackageName} has been removed from your system")
         else:
             messagebox.showerror("package uninstalling failed",f"failed to uninstall {PackageName} successfully")
         lsit_packages()
 
+def loading(Loading):
+    if Loading:
+        LoadingIcon.place(x=200,y=200)
+    else:
+        LoadingIcon.place_forget()
+    return
+
 def update_package():
+    loading(True)
+    root.update()
     PackageName = PackageList.get(PackageList.curselection()[0]).split()[0]
     ExitCode = os.system(f"pip install {PackageName} -U --user")
+    loading(False)
+    root.update()
     if not ExitCode:
         messagebox.showinfo("updated package",f"{PackageName} was updated successfully")
     else:
@@ -102,6 +122,8 @@ def search_list(event):
             PackageList.insert(END,f"{x[0]} -- {x[1]}")
 
 def get_info():
+    loading(True)
+    root.update()
     PackageName = PackageList.get(PackageList.curselection()[0]).split()[0]
 
     output = subprocess.run(['pip', 'show',PackageName], stdout=subprocess.PIPE, text=True).stdout.splitlines(False)
@@ -121,7 +143,6 @@ def get_info():
         PackageInfo.append(output[7].split("Location: ")[1])
         PackageInfo.append(output[8].split("Requires: ")[1].replace(",",""))
         PackageInfo.append(output[9].split("Required-by: ")[1].replace(",",""))
-        print(PackageInfo)
 
         #show info window
         PackageInfoWindow.pack(side=BOTTOM,fill=BOTH,expand=True)
@@ -131,17 +152,19 @@ def get_info():
         PackageVersion.config(text=PackageInfo[1])
         #hide main window
         MainWindow.pack_forget()
+        loading(False)
+        root.update()
 
 TitleFrame = ttk.Frame(root,width=100)
 TitleFrame.pack()
 
-TitleIconImage = Image.open("easy pip.png").resize((40,40), Image.ANTIALIAS)
+TitleIconImage = Image.open("img/easy pip.png").resize((40,40), Image.ANTIALIAS)
 TitleIcon = ImageTk.PhotoImage(TitleIconImage)
 TitleIconLable = ttk.Label(TitleFrame,image=TitleIcon)
-TitleIconLable.pack(side="left")
+TitleIconLable.pack(side=LEFT)
 
-LoadingIconImage = ImageTk.PhotoImage(Image.open("loading.png").resize((40,40),Image.ANTIALIAS))
-LoadingIcon = ttk.Label(TitleFrame,image=LoadingIconImage)
+LoadingIconImage = ImageTk.PhotoImage(Image.open("img/loading.png").resize((100,100),Image.ANTIALIAS))
+LoadingIcon = ttk.Label(root,image=LoadingIconImage)
 
 
 TitleFont = font.Font(family='Helvetica', size=20, weight='bold')
