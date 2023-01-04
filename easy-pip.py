@@ -150,10 +150,18 @@ def get_info():
         PackageNameLable.config(text=PackageInfo[0])
         PackageDscription.config(text=PackageInfo[2])
         PackageVersion.config(text=PackageInfo[1])
+        PackageUrl.config(text=PackageInfo[3])
+        AuthorName.config(text=f'Author: {PackageInfo[4]} - {PackageInfo[5]}')
+        PackageLicense.config(text=f'License: {PackageInfo[6]}')
+        PackageLocation.config(text=f'Location: {PackageInfo[7]}')
         #hide main window
         MainWindow.pack_forget()
         loading(False)
         root.update()
+
+def hide_info():
+    PackageInfoWindow.pack_forget()
+    MainWindow.pack(side=BOTTOM,fill=BOTH,expand=True)
 
 TitleFrame = ttk.Frame(root,width=100)
 TitleFrame.pack()
@@ -211,22 +219,44 @@ RemoveButton = ttk.Button(BottomButtonTray,width=10,text="remove",command=remove
 RemoveButton.grid(row=0,column=2, sticky="nsew")
 
 #package info window
+
+PackageInfoWindow.columnconfigure(0,weight=1)
+
+
 PackageNameFrame = ttk.Frame(PackageInfoWindow,width=100)
+PackageNameFrame.grid(column=0,row=0,sticky="w")
 
-PackageNameLable = ttk.Label(PackageInfoWindow,text=PackageInfo[0],font=font.Font(size=30))
-PackageNameLable.pack(side=LEFT)
+PackageNameLable = ttk.Label(PackageNameFrame,text=PackageInfo[0],font=font.Font(size=30))
+PackageNameLable.grid(column=0,row=0,sticky="wns")
 
-PackageVersion = ttk.Label(PackageInfoWindow,text="2.2.2",font=font.Font(size=13))
-PackageVersion.pack(side=LEFT)
+PackageVersion = ttk.Label(PackageNameFrame,text="2.2.2",font=font.Font(size=13))
+PackageVersion.grid(column=1,row=0,sticky="wsn")
 
-PackageInfoClose = ttk.Button(PackageInfoWindow,text="X")
-PackageInfoClose.pack(side=LEFT)
+PackageInfoClose = ttk.Button(PackageInfoWindow,text="X",width=3,command=hide_info)
+PackageInfoClose.grid(column=1,row=0,sticky="esn",padx=(0,5))
 
 PackageInputFrame.pack(side=TOP)
 
-PackageDscription = ttk.Label(PackageInfoWindow,text="A simple framework for building complex web applications.",wraplength=200)
-PackageDscription.pack(side=TOP)
+PackageDscription = ttk.Label(PackageInfoWindow,text="A simple framework for building complex web applications.",wraplength=400,font=font.Font(size=13))
+PackageDscription.grid(column=0,row=1,sticky="w",pady=(5,0))
 
+PackageUrl = ttk.Label(PackageInfoWindow,text="blabla",wraplength=500,font=font.Font(size=10),foreground="darkblue")
+PackageUrl.grid(column=0,row=2,sticky="w",pady=(10,0))
+PackageUrl.bind("<Button-1>",lambda x: webbrowser.open(PackageInfo[3]))
+PackageUrl.bind("<Enter>", lambda x: PackageUrl.config(font=font.Font(size=10,family="Helvetica",underline=True)))
+PackageUrl.bind("<Leave>", lambda x: PackageUrl.config(font=font.Font(size=10,family="Helvetica",underline=False)))
+
+AuthorName = ttk.Label(PackageInfoWindow,text="myrccar - idk@gmail.com",font=font.Font(size=10))
+AuthorName.grid(column=0,row=3,sticky="w",pady=(1,0))
+
+PackageLicense = ttk.Label(PackageInfoWindow,text="",font=font.Font(size=10))
+PackageLicense.grid(column=0,row=4,sticky="w",pady=(1,0))
+
+PackageLocation = ttk.Label(PackageInfoWindow,text="C:/idk",font=font.Font(size=10))
+PackageLocation.grid(column=0,row=5,sticky="w",pady=(1,0))
+PackageLocation.bind("<Button-1>",lambda x: os.system(f"start {PackageInfo[7]}"))
+PackageLocation.bind("<Enter>", lambda x: PackageLocation.config(font=font.Font(size=10,family="Helvetica",underline=True)))
+PackageLocation.bind("<Leave>", lambda x: PackageLocation.config(font=font.Font(size=10,family="Helvetica",underline=False)))
 
 MainWindow.pack(side=BOTTOM,fill=BOTH,expand=True)
 #PackageInfoWindow.pack(side=BOTTOM,fill=BOTH,expand=True)
