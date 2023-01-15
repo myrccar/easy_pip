@@ -16,6 +16,9 @@ commands needed:
 -pip uninstall <ackage>-
 '''
 
+si = subprocess.STARTUPINFO()
+si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
 root = ThemedTk(theme='equilux',background="#464646")
 root.geometry("500x500")
 root.resizable(0,0)
@@ -31,7 +34,7 @@ pip_list = []
 PackageInfo = ["none" for i in range(9)]
 
 def get_pip_list():
-    raw_list = subprocess.run(['pip', 'list'], stdout=subprocess.PIPE, text=True).stdout.splitlines(False)
+    raw_list = subprocess.run(['pip', 'list'], stdout=subprocess.PIPE, text=True, startupinfo=si).stdout.splitlines(False)
 
     heeder_index = -1 
     i = -1
@@ -126,7 +129,7 @@ def get_info():
     root.update()
     PackageName = PackageList.get(PackageList.curselection()[0]).split()[0]
 
-    output = subprocess.run(['pip', 'show',PackageName], stdout=subprocess.PIPE, text=True).stdout.splitlines(False)
+    output = subprocess.run(['pip', 'show',PackageName], stdout=subprocess.PIPE, text=True, startupinfo=si).stdout.splitlines(False)
     #error check\/
     if output == []:
         messagebox.showerror("package info faild",f"failed to get info on {PackageName} successfully")
